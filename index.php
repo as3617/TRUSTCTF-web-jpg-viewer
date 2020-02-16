@@ -42,19 +42,22 @@
     </form>
     <pre>
         <?php
-
             session_start();
+            if(isset($_GET['source'])){
+                echo highlight_file(__FILE__);
+            exit;
+            }
 
     function imageanalyze($file){
         if(!is_file($file)){
             echo '<script>alert("Where is the File?")</script>';
-            exit;
+            die("");
         }
         elseif(!exif_read_data($file)){
-	    unlink($file);
-	    exit;
-	}
-	else{
+            unlink($file);
+            die("");
+        }
+        else{
             return exif_read_data($file);
         }
     }
@@ -71,12 +74,12 @@
 
         if(!in_array($ext, $allowed_extensions)) {
             echo "<script>jpg파일만 업로드 할 수 있습니다.')</script>";
-            exit;
+            die("");
         }
 
         if($file['size'] >= $max_file_size) {
             echo "<script>alert('파일은 5MB 까지만 업로드 가능합니다.')</script>";
-            exit;
+            die("");
         }
 
         $path = $upload_directory.session_id();
@@ -89,21 +92,21 @@
         }
         else{
             echo "<script>alert('업로드 에러!')</script>";
-            exit;
+            die("");
         }
         }
     ?>
     </pre>
     <pre>
-    <?php   
+    <?php
                 if(isset($infor)){
                         $size = round($infor['FileSize']/1024,1);
                         echo "<br>파일명 : {$infor['FileName']}<br>";
                         echo "파일 크기 : {$size}KB<br>";
                         if(array_key_exists('DateTimeOriginal',$infor)){
                                 echo "촬영 시간 : {$infor['DateTimeOriginal']}<br>";
-                        }       
-                        else{   
+                        }
+                        else{
                                 $date = date("Y-m-d H:i:s", $infor['FileDateTime']);
                                 echo "업로드 시간 : {$date}<br>";
                         }
@@ -116,5 +119,3 @@
 
 <div id="row">
 <div class="col-md-12">
-
-
